@@ -8,3 +8,4 @@ jobs:
            run: |
               echo "A demo build"
               echo "Hello, ${{ vars.MY_NAME}}"
+              echo "Secret: ${{secrets.DOCKER_PASSWORD}}"
