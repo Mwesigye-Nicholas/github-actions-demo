@@ -2,11 +2,17 @@ name: Outputs Demo
 
 on: push
 jobs:
-  job1:
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Step One
-        id: step1
-        run: echo "version=0.0.1" >> $GITHUB_OUTPUT
-      - name: Step Two
-        run: echo "This version is ${{ steps.step1.outputs.version}}"
+    build: #build job is building the version variable (artifact) that is going to be passed to the next job to deploy
+      outputs:
+        version_value: ${{steps.step1.outputs.version}}
+      runs-on: ubuntu-24.04
+      steps:
+        - name: Build Step 
+          id: step1
+          run: echo "version=0.0.1" >> $GITHUB_OUTPUT
+    deploy:
+      needs: build
+      runs-on: ubuntu-24.04
+      steps:
+        - name: Deploy the App
+          run: "We are deploying the app with version ${{needs.build.outputs.version_value}}"
