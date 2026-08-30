@@ -1,0 +1,44 @@
+name: Code development life cycle with if
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/**
+jobs:
+    quality_checks:
+      if: startsWith(github.ref_name, 'feature') && github.event_name == 'push'
+      runs-on: ubuntu-latest
+      steps:
+        - name: Perform code quality checks
+          run: echo "Perform quality checks on the code."
+    
+    dev_deploy:
+      if: github.ref_name == 'develop' && github.event_name == 'push'
+      runs-on: ubuntu-latest
+      steps:
+        - name: Dev Deploy
+          run: echo "Deploying the code to development environment."
+
+    pro_deploy:
+      if: github.ref_name == 'main' && github.event_name == 'push'
+      runs-on: ubuntu-latest
+      steps:
+        - name: Dev Devploy
+          run: echo "Deploying the code to production environment."
+
+    success_notification:
+      needs: ['quality_checks','dev_deploy','pro_deploy']
+      if: always()&& !failure()
+      runs-on: ubuntu-latest
+      steps:
+        - name: Notify Success
+          run: echo "Success Email Sent to the Team."
+
+    failure_notification:
+      needs: ['quality_checks','dev_deploy','pro_deploy']
+      if: failure()
+      runs-on: ubuntu-latest
+      steps:
+        - name: Notify Failure
+          run: echo "Failure Email Sent to the Team."
