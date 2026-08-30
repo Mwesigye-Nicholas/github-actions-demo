@@ -29,7 +29,7 @@ jobs:
 
     success_notification:
       needs: ['quality_checks','dev_deploy','pro_deploy']
-      if: failure()
+      if: always()&& !failure()
       runs-on: ubuntu-latest
       steps:
         - name: Notify Success
@@ -37,7 +37,7 @@ jobs:
 
     failure_notification:
       needs: ['quality_checks','dev_deploy','pro_deploy']
-      if: always()&& !failure()
+      if: failure()
       runs-on: ubuntu-latest
       steps:
         - name: Notify Failure
